@@ -30,10 +30,12 @@ def getter():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(port=5000, debug=True)
 
 '''
 Run Server:
 flask --app app run
+flask --app app run --port=5000 --debug
+
 
 '''
