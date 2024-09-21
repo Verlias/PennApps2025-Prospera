@@ -93,6 +93,7 @@ def Personalize_Recommendation():
         # Get the input data from the request body
         
         # Hard Code Test
+        '''
         data = {
         
             "Food": 3960.108554999084,
@@ -103,6 +104,8 @@ def Personalize_Recommendation():
             "debt": 10748,
             "income": 27359
         }
+        '''
+
 
         data = request.get_json()
 
@@ -122,8 +125,8 @@ def Personalize_Recommendation():
    
         prompt = f"""
             The user has an income of ${income} yearly and their debt is ${debt}. They have a credit score of ${credit_score}. They also spend ${Utilities} on utilities, ${Food} on food, ${Housing} on housing, and ${Transportation} on transportation. 
-            What recommendations can be made to improve their budgeting and save more money for te next month? Give me a response in a one paragraph format no bullet points with numbers and percentages.
-            Also do it in a format where you are talking to the user directly. Directly giving them advice speaking as if we are an app giving advice.
+            What recommendations can be made to improve their budgeting and save more money for the next month? Give me a response in a one paragraph (4 Sentences) format no bullet points with numbers and percentages.
+            Also do it in a format where you are talking to the user directly and youre an chatbot app giving advice. 
 
         """
         recommendation = get_budget_recommendation(prompt)
