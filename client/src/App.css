@@ -1,42 +1,86 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@layer  {
+  html, body {
+    height: 100%;
+    width: 100%;
+    /*cursor: none;*/
+    overflow: hidden;
   }
-  to {
-    transform: rotate(360deg);
+  #root {
+    height: 100%;
+    width: 100%;
   }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+  .scrollbar::-webkit-scrollbar{
+    background-color: rgba(255, 255, 255, 0);
+    width: 5px;
   }
-}
+  .scrollbar::-webkit-scrollbar-thumb{
+    background-color: white;
+    border-radius: 10px;
+  }
+  .hide-spin-buttons::-webkit-inner-spin-button,
+  .hide-spin-buttons::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
 
-.card {
-  padding: 2em;
-}
+  .hide-spin-buttons {
+    -moz-appearance: textfield;
+  }
+  a {
+    cursor: none;
+  }
 
-.read-the-docs {
-  color: #888;
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-5px); /* Adjust this value for more or less movement */
+    }
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite; /* Adjust the duration for speed */
+  }
+
+  @keyframes float-dif {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(3px); /* Adjust this value for more or less movement */
+    }
+  }
+
+  .animate-float-dif {
+    animation: float-dif 3s ease-in-out infinite; /* Adjust the duration for speed */
+  }
+
+  .container {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .box {
+    margin: 20px auto;
+  }
+
+  .left {
+    flex: 1;
+    clip-path: polygon(30% 0%, 100% 0, 70% 100%, 0% 100%);
+  }
+
+  .middle {
+    flex: 1;
+    clip-path: polygon(30% 0, 90% 0, 70% 100%, 0% 100%);
+  }
+
+  .right {
+    flex: 1;
+    clip-path: polygon(20% 0, 100% 0, 100% 100%, 0% 100%);
+  }
 }
