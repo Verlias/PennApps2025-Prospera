@@ -38,4 +38,3 @@ for _ in range(1000):  # Adjust the number of samples
 df = pd.DataFrame(data)
 df.to_csv('synthetic_financial_data1.csv', index=False)
 
-# Optional: Display the first few rows to verify
