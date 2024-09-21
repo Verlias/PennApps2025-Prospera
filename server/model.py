@@ -7,7 +7,7 @@ from sklearn.neighbors import NearestNeighbors
 # Step 1: Load your dataset from CSV file
 df = pd.read_csv('synthetic_financial_data1.csv')
 
-def financial_group_classification():
+def financial_group_classification(income, debt, credit_score):
     # Select relevant features
     X = df[['income', 'debt', 'credit_score']]  # Features: Income, Debt, Credit Score
 
@@ -19,11 +19,11 @@ def financial_group_classification():
     neighbors_model = NearestNeighbors(n_neighbors=10)
     neighbors_model.fit(X_scaled)
 
-    # Example new user data
+    # Create a DataFrame for the new user data using the input arguments
     new_user_data = pd.DataFrame({
-        'income': [70000],     # Example income
-        'debt': [8000],        # Example debt
-        'credit_score': [715]  # Example credit score
+        'income': [income],         # Inputted income
+        'debt': [debt],             # Inputted debt
+        'credit_score': [credit_score]  # Inputted credit score
     })
 
     # Scale the new user data using the same scaler
@@ -39,9 +39,10 @@ def financial_group_classification():
     return closest_users.to_dict(orient='records')
 
 
+'''
 if __name__ == '__main__':
     print(financial_group_classification())
-'''
+
 User Inputs Information:
 Inputted Data:
 - Income
