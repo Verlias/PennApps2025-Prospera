@@ -39,4 +39,3 @@ df = pd.DataFrame(data)
 df.to_csv('synthetic_financial_data1.csv', index=False)
 
 # Optional: Display the first few rows to verify
-print(df.head())
