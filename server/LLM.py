@@ -7,13 +7,7 @@ load_dotenv()
 api_key = os.getenv("CEREBRAS_API_KEY")
 client = Cerebras(api_key=api_key)
 
-def get_budget_recommendation(income, expenses, financial_goals):
-    # Construct the prompt for recommendation
-    prompt = f"""
-    The user has an income of ${income} per month and their monthly expenses are ${expenses}. 
-    Their financial goal is {financial_goals}. What recommendations can be made to improve their budgeting and save more money?
-    """
-    
+def get_budget_recommendation(prompt):
     # Send the request to Cerebras for completion
     '''
     response = client.chat.completions.create(
@@ -34,13 +28,15 @@ def get_budget_recommendation(income, expenses, financial_goals):
         model="llama3.1-8b",
     )
 
+    message_content = chat_completion.choices[0].message.content
+
     # Extract and return the generated recommendation
-    return chat_completion
+    return message_content
 
 # Example usage:
-income = 5000
-expenses = 3500
-financial_goals = "saving for a new car in 2 years"
+# income = 5000
+# expenses = 3500
+# financial_goals = "I want to leave college debt free"
 
-recommendation = get_budget_recommendation(income, expenses, financial_goals)
-print("Budget Recommendation:", recommendation)
+# recommendation = get_budget_recommendation(income, expenses, financial_goals)
+
