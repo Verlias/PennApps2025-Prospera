@@ -15,6 +15,16 @@ const router = createBrowserRouter(
     ) ,  { basename: import.meta.env.BASE_URL }
 )
 
+import { AuthProvider } from "@propelauth/react";
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
+    <AuthProvider authUrl={process.env.REACT_APP_AUTH_URL}>
+        <YourApp />
+    </AuthProvider>,
+    document.getElementById("root")
+);
+
 function App() {
   const [count, setCount] = useState(0)
 
