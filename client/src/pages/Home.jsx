@@ -2,6 +2,7 @@ import {useEffect, useRef, useState} from "react";
 import Plot from 'react-plotly.js';
 import {dateDifference} from "../utils/tools.js";
 import {SpendChart} from "../components/SpendChart.jsx";
+import {RAPID_API_KEY} from "../../keys.js";
 
 export const Home = () => {
 
@@ -25,14 +26,14 @@ export const Home = () => {
         }]);
 
     useEffect(() => {
-        fetch("https://yahoo-finance15.p.rapidapi.com/api/v2/markets/tickers?type=ETF", {
-            method: "GET",
-            headers: {
-                'x-rapidapi-key': '83b2390b4bmsh2f41ace782b0feap1455fdjsn45effac7b22f',
-                'x-rapidapi-host': 'yahoo-finance15.p.rapidapi.com'
-            }
-        }).then(res => res.json())
-            .then(resp => setSp([resp.body[0], resp.body[1]]))
+        // fetch("https://yahoo-finance15.p.rapidapi.com/api/v2/markets/tickers?type=ETF", {
+        //     method: "GET",
+        //     headers: {
+        //         'x-rapidapi-key': RAPID_API_KEY,
+        //         'x-rapidapi-host': 'yahoo-finance15.p.rapidapi.com'
+        //     }
+        // }).then(res => res.json())
+        //     .then(resp => setSp([resp.body[0], resp.body[1]]))
 
     }, []);
 
@@ -65,12 +66,12 @@ export const Home = () => {
 
     return (
         <div className="w-full h-full bg-amber-50 overflow-x-hidden overflow-y-auto">
-            <div className="w-full h-full grid grid-rows-[75%_25%]">
+            <div className="w-full h-full grid grid-rows-[65%_35%]">
                 <div className="w-full h-full grid grid-cols-[70%_30%] ">
                     <div className="flex items-center justify-center">
                         <SpendChart />
                     </div>
-                    <div className="w-full h-full grid grid-rows-[40%_40%_20%]">
+                    <div className="w-full h-full grid grid-rows-[40%_50%_10%]">
                         <div className="w-full h-full grid grid-rows-[85%_15%] text-8xl">
                             <div className="w-full h-full grid grid-rows-[50%_50%] justify-center pb-2 items-end">
                                 <div />
@@ -91,16 +92,13 @@ export const Home = () => {
                             <div className="w-full h-full flex items-center justify-center">
                                 <div className="w-10/12 h-5/6 bg-amber-100 rounded-lg border border-slate-600 p-2">
                                     <div className="w-full bg-blue-900 flex h-[10%] relative rounded-lg">
-                                        <div onMouseEnter={() => setHoverBar("a")} onMouseLeave={() => setHoverBar(null)}
-                                             style={{width: hoverBar === null ? "70%" : hoverBar === "a" ? "100%" : "0%", borderRadius: hoverBar === "a" ? "0.5rem" : ""}} className="flex items-center justify-center text-white transition-all bg-indigo-700 rounded-l-lg" >
+                                        <div onMouseEnter={() => setHoverBar("a")} onMouseLeave={() => setHoverBar(null)} style={{width: hoverBar === null ? "70%" : hoverBar === "a" ? "100%" : "0%", borderRadius: hoverBar === "a" ? "0.5rem" : ""}} className="flex items-center justify-center text-white transition-all bg-indigo-700 rounded-l-lg" >
                                             {hoverBar === "a" ? "Education" : ""}
                                         </div>
-                                        <div onMouseEnter={() => setHoverBar("b")} onMouseLeave={() => setHoverBar(null)}
-                                             style={{width: hoverBar === null ? "20%" : hoverBar === "b" ? "100%" : "0%", borderRadius: hoverBar === "b" ? "0.5rem" : ""}} className="flex items-center justify-center text-white transition-all bg-blue-500" >
+                                        <div onMouseEnter={() => setHoverBar("b")} onMouseLeave={() => setHoverBar(null)} style={{width: hoverBar === null ? "20%" : hoverBar === "b" ? "100%" : "0%", borderRadius: hoverBar === "b" ? "0.5rem" : ""}} className="flex items-center justify-center text-white transition-all bg-blue-500" >
                                             {hoverBar === "b" ? "Housing" : ""}
                                         </div>
-                                        <div onMouseEnter={() => setHoverBar("c")} onMouseLeave={() => setHoverBar(null)}
-                                             style={{width: hoverBar === null ? "10%" : hoverBar === "c" ? "100%" : "0%", borderRadius: hoverBar === "c" ? "0.5rem" : ""}} className="flex items-center justify-center text-white transition-all bg-cyan-500 rounded-r-lg" >
+                                        <div onMouseEnter={() => setHoverBar("c")} onMouseLeave={() => setHoverBar(null)} style={{width: hoverBar === null ? "10%" : hoverBar === "c" ? "100%" : "0%", borderRadius: hoverBar === "c" ? "0.5rem" : ""}} className="flex items-center justify-center text-white transition-all bg-cyan-500 rounded-r-lg" >
                                             {hoverBar === "c" ? "Utilities" : ""}
                                         </div>
                                     </div>
@@ -126,8 +124,7 @@ export const Home = () => {
                                     <div className="h-[25%] w-full flex gap-2 items-center py-2">
                                         {
                                             sp.map((item, ind) => (
-                                                <div style={{backgroundColor: `rgba(${254 - parseInt(item.percentageChange.split("%")[0]) * 30}, ${243 + parseInt(item.percentageChange.split("%")[0]) * 30},${199})`}}
-                                                     className="w-1/2 h-full border border-slate-600 rounded-lg flex">
+                                                <div style={{backgroundColor: `rgba(${254 - parseInt(item.percentageChange.split("%")[0]) * 30}, ${243 + parseInt(item.percentageChange.split("%")[0]) * 30},${199})`}} className="w-1/2 h-full border border-slate-600 rounded-lg flex">
                                                     <div className="w-[60%] h-full pl-2 flex items-center">
                                                         {item.symbol}
                                                     </div>
@@ -160,11 +157,18 @@ export const Home = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="w-full h-full bg-green-500"></div>
 
                     </div>
                 </div>
-                <div className="w-full h-full bg-blue-500"></div>
+                <div className="w-full h-full">
+                    <div className="w-full h-1/2 flex p-4 border-y border-slate-400 gap-4 overflow-x-auto">
+                        <div className=" w-full border-x border-slate-300 h-full "></div>
+                        <div className=" w-full border-x border-slate-300 h-full "></div>
+                        <div className=" w-full border-x border-slate-300 h-full "></div>
+                        <div className=" w-full border-x border-slate-300 h-full "></div>
+                        <div className=" w-full border-x border-slate-300 h-full "></div>
+                    </div>
+                </div>
 
             </div>
 

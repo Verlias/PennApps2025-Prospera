@@ -1,8 +1,8 @@
 import Plot from "react-plotly.js";
 
 export const SpendChart = () => {
-    const xValues = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-    const yValues1 = [2, 6, 3, 10, 15, 12, 8, 9, 10, 10.3, 13,10, 8];
+    const xValues = Array.from({ length: 30 }).map((_, i) => i + 1);
+    const yValues1 = [2, 6, 3, 10, 15, 12, 8, 9, 10, 10.3, 13,10, 8, 12, 11, 13, 10];
 
     return (
         <Plot
@@ -18,8 +18,7 @@ export const SpendChart = () => {
             ]}
             layout={{
                 width: "1000",
-                height: "600",
-                // title: 'Time Series Plot',
+                height: "500",
                 paper_bgcolor: 'rgba(0,0,0,0)',
                 plot_bgcolor: "rgba(0,0,0,0)",
                 xaxis: {
