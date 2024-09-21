@@ -30,7 +30,7 @@
     -moz-appearance: textfield;
   }
   a {
-    cursor: none;
+    /*cursor: none;*/
   }
 
   @keyframes float {

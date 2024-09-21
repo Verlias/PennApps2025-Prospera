@@ -20,6 +20,10 @@
     background-color: white;
     border-radius: 10px;
   }
+  .scrollbar-hidden::-webkit-scrollbar{
+    display: none;
+  }
+
   .hide-spin-buttons::-webkit-inner-spin-button,
   .hide-spin-buttons::-webkit-outer-spin-button {
     -webkit-appearance: none;
@@ -30,7 +34,7 @@
     -moz-appearance: textfield;
   }
   a {
-    cursor: none;
+    /*cursor: none;*/
   }
 
   @keyframes float {
