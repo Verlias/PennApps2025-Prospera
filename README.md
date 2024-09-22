@@ -1,11 +1,10 @@
-# PennApps2025
-Team Members:
+# 💸 PennApps2025 - Prospera: AI-Powered Budgeting Tool
+
+## Team Members:
  - Logan Voravong: lsv27@drexel.edu
  - Aman Sharma: amanshar@sas.upenn.edu
  - Taqi Tahmid: tt676@drexel.edu
  - Jacob Rimmer: rimmerj@seas.upenn.edu
-
-# 💸 Prospera: AI-Powered Budgeting Tool
 
 ## 📖 Overview
 Prospera is an AI-powered budgeting application built with advanced web technologies. It empowers users to manage their finances more effectively by utilizing machine learning to analyze spending patterns and deliver personalized budget recommendations. Capital One is integrated for real-time financial data, ensuring seamless connectivity with users' banking information, while PropelAuth provides secure and scalable user authentication. Additionally, the Cerebras AI platform powers the deployment of the LLaMA Large Language Model (LLM) for our chatbot, offering rapid and precise financial insights.
