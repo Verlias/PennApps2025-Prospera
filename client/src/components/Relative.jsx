@@ -23,10 +23,10 @@ export const Relative = ({myExpense, avgExpense, theme}) => {
                     <div className={`flex items-center justify-center`}>
                         <b>{Math.round(100 *(myExpense - avgExpense)/ Math.max(myExpense, avgExpense))}</b>%
                     </div>
-                    <div className="text-lg flex items-center justify-center">Lesser Expenditure</div>
+                    <div className="text-lg flex items-center justify-center">{myExpense > avgExpense ? "Excess" : "Lesser"} Expenditure</div>
                 </div>
                 <div className="pr-8 border-y pl-8 border-slate-500 h-full w-1/2 flex items-center">
-                    <div>Last month you spent lesser <b className="text-blue-800">Non Essentials</b> than the average
+                    <div>Last month you spent lesser on <b className="text-blue-800">Non Essentials</b> than the average
                         among a similar set of consumers
                     </div>
                 </div>
@@ -35,10 +35,10 @@ export const Relative = ({myExpense, avgExpense, theme}) => {
                 <div onMouseEnter={() => setHovering(true)} onMouseLeave={() => setHovering(false)}
                     className={`w-full h-32 rounded-b-xl relative flex items-center text-3xl bg-opacity-70 backdrop-blur-xl gap-4 justify-center bg-amber- rounded-l-xl`}>
                     <div>We recommend setting a budget of &nbsp; <b
-                        className="text-green-700 text-4xl">${Math.min(myExpense, Math.abs((myExpense + avgExpense)/2))}</b> &nbsp; for {theme}&nbsp; next month
+                        className="text-green-700 text-4xl">${Math.min(myExpense, Math.abs((myExpense + avgExpense)/2)).toFixed((0))}</b> &nbsp; for {theme}&nbsp; next month
                     </div>
                     <div
-                        className="w-1/6 h-1/2 bg-green-300 ml-8 text-3xl flex items-center justify-center rounded-xl">
+                        className="w-1/6 h-1/2 hover:cursor-pointer hover:bg-opacity-50 transition-colors bg-green-300 bg-opacity-30  ml-8 text-3xl flex items-center justify-center rounded-xl">
                         Set Budget
                     </div>
                 </div>
@@ -55,7 +55,7 @@ export const RelativeFl = ({myExpense, avgExpense, theme}) => {
             <div onMouseEnter={() => setHovering(true)} onMouseLeave={() => setHovering(false)}
                  className="w-full h-1/6 pr-8 text-xl flex items-center relative">
                 <div className="pr-8 border-y pl-8 border-slate-500 h-full w-1/2 flex items-center">
-                    <div>Last month you spent lesser <b className="text-blue-800">{theme}</b> than the average
+                    <div>Last month you spent lesser on <b className="text-blue-800">{theme}</b> than the average
                         among a similar set of consumers
                     </div>
                 </div>
@@ -74,18 +74,18 @@ export const RelativeFl = ({myExpense, avgExpense, theme}) => {
                     <div className={`flex items-center justify-center`}>
                         <b>{Math.round(100 * (myExpense - avgExpense) / Math.max(myExpense, avgExpense))}</b>%
                     </div>
-                    <div className="text-lg flex items-center justify-center">Lesser Expenditure</div>
+                    <div className="text-lg flex items-center justify-center">{myExpense > avgExpense ? "Excess" : "Lesser"} Expenditure</div>
                 </div>
             </div>
             <Collapse orientation="vertical" in={hovering} timeout="auto" unmountOnExit>
                 <div onMouseEnter={() => setHovering(true)} onMouseLeave={() => setHovering(false)}
                     className={`w-full h-32 rounded-b-xl relative flex items-center text-3xl bg-opacity-70 backdrop-blur-xl gap-4 justify-center bg-amber- rounded-l-xl`}>
                     <div>We recommend setting a budget of &nbsp; <b
-                        className="text-green-700 text-4xl">${Math.min(myExpense, Math.abs((myExpense + avgExpense) / 2))}</b> &nbsp; for {theme}&nbsp;
+                        className="text-green-700 text-4xl">${Math.round(Math.min(myExpense, Math.abs((myExpense + avgExpense) / 2)))}</b> &nbsp; for {theme}&nbsp;
                         next month
                     </div>
                     <div
-                        className="w-1/6 h-1/2 bg-green-300 ml-8 text-3xl flex items-center justify-center rounded-xl">
+                        className="w-1/6 hover:cursor-pointer hover:bg-opacity-50 transition-colors h-1/2 bg-green-300 bg-opacity-30 ml-8 text-3xl flex items-center justify-center rounded-xl">
                         Set Budget
                     </div>
                 </div>

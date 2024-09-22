@@ -7,15 +7,15 @@ import {
     getLastThreeMerchantNames
 } from "../utils/tools.js";
 import {SpendChart} from "../components/SpendChart.jsx";
-import {desktopOS, valueFormatter} from "../utils/webUsageStats.js";
+import {valueFormatter} from "../utils/webUsageStats.js";
 import {CAPITALONE_KEY} from "../../keys.js";
 import {CumuPlot} from "../components/CumuPlot.jsx";
 import {BudgetView} from "../components/BudgetView.jsx";
 import {useNavigate} from "react-router-dom";
+import {queryData} from "../context/DataContext.jsx";
 
 export const Home = () => {
 
-    const [accountHist, setAccountHist] = useState()
     const [hoverBar, setHoverBar] = useState(null)
     const [news, setNews] = useState([
             {
@@ -126,6 +126,7 @@ export const Home = () => {
         fetch(url).then(res => res.json())
             .then(async resp => {
                 setYVals(getGroupedTransactions(resp));
+                console.log(yVals)
                 const res = await getLastThreeMerchantNames(resp)
                 return [res, resp]
             })
@@ -134,7 +135,6 @@ export const Home = () => {
                 return getGroupedTransactionsByCategory(item[1])
             })
             .then(item => {
-                console.log(item)
                 setCategory(item)
             })
     }, []);
@@ -169,7 +169,7 @@ export const Home = () => {
                 </div>
             </div>
             <div className="w-full h-[82%] grid grid-rows-[75%_25%]">
-                <div className="w-full h-full grid grid-cols-[70%_30%] ">
+                <div className="w-full h-full grid grid-cols-[65%_35%] ">
                     <div className="flex items-center justify-center">
                         <SpendChart yVals={yVals}/>
                     </div>
@@ -183,7 +183,7 @@ export const Home = () => {
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 6.75 12 3m0 0 3.75 3.75M12 3v18"/>
                                         </svg>
                                     </div>
-                                    $1217
+                                    ${yVals[yVals.length-1]?.reduce((acc, curr) => acc + curr[1], 0).toFixed(1)}
                                 </div>
                             </div>
                             <div className="text-lg flex justify-center ">
@@ -192,7 +192,7 @@ export const Home = () => {
                         </div>
                         <div className="w-full grid grid-cols-[50%_50%] h-full">
                             <div className="w-full h-full flex items-center justify-center">
-                                <div className="w-11/12 h-5/6 bg-amber-100 rounded-lg border border-slate-600 p-2">
+                                <div className="w-10/12 h-5/6  rounded-lg border-y border-slate-600 p-2">
                                     <div className="w-full bg-blue-900 flex h-[10%] relative rounded-lg">
                                         <div onMouseEnter={() => setHoverBar("a")} onMouseLeave={() => setHoverBar(null)} style={{
                                             width: hoverBar === null ? "70%" : hoverBar === "a" ? "100%" : "0%",
@@ -218,7 +218,7 @@ export const Home = () => {
                                         {
                                             lastTransactions?.map((item, index) => (
                                                     <div
-                                                        className={`w-full h-1/3   ${index === 0 ? "border-t border-b" : "border-b"} transition-colors hover:bg-amber-200 flex border-slate-600`}>
+                                                        className={`w-full h-1/3   ${index === 0 ? "border-t border-b" : "border-b"} transition-colors hover:bg-amber-100 flex border-slate-600`}>
                                                         <div className="w-[22%] text-xl font-semibold flex items-center">
                                                             ${item.price.toFixed(1)}
                                                         </div>
@@ -305,7 +305,8 @@ export const Home = () => {
             </div>
             <div className="w-full h-full p-8">
                 <div className="w-full h-[60%]">
-                    <div className="rounded-xl border border-slate-400 bg-amber-100 bg-opacity-30 w-full h-full grid grid-cols-[40%_60%] p-8">
+                    <div
+                        className="rounded-xl border border-slate-400 bg-amber-100 bg-opacity-30 w-full h-full grid grid-cols-[40%_60%] p-8">
                         <div className="w-full h-full flex items-center justify-center ">
                             {category && <PieChart
                                 colors={['#fed7aa', '#d9f99d', '#ddd6fe', '#fda4af', '#7dd3fc', "#d8b4fe", "#34d399"]}
@@ -322,14 +323,78 @@ export const Home = () => {
                         </div>
                         <div className="w-full h-full pl-8 grid grid-cols-[8%_92%]">
                             <div className="ml-8 w-full h-full bg-amber-50 grid grid-rows-2">
-                                <div onClick={() => setViewBudget(false)} className={`${viewBudget ? "bg-amber-100" : "border-r border-slate-600"} transition-all hover:cursor-pointer [writing-mode:vertical-lr] w-full h-full flex items-center justify-center text-xl`}>Net Spend</div>
-                                <div onClick={() => setViewBudget(true)} className={`${!viewBudget ? "bg-amber-100" : "border-r border-slate-600"} transition-all hover:cursor-pointer [writing-mode:vertical-lr] w-full h-full flex items-center justify-center text-xl`}>Budget</div>
+                                <div onClick={() => setViewBudget(false)}
+                                     className={`${viewBudget ? "bg-amber-100" : "border-r border-slate-600"} transition-all hover:cursor-pointer [writing-mode:vertical-lr] w-full h-full flex items-center justify-center text-xl`}>Net
+                                    Spend
+                                </div>
+                                <div onClick={() => setViewBudget(true)}
+                                     className={`${!viewBudget ? "bg-amber-100" : "border-r border-slate-600"} transition-all hover:cursor-pointer [writing-mode:vertical-lr] w-full h-full flex items-center justify-center text-xl`}>Budget
+                                </div>
                             </div>
                             <div className="w-full h-full pl-8">
                                 {yVals.length && !viewBudget && <CumuPlot yData={yVals[yVals.length - 1]}/>}
-                                {viewBudget && category && <BudgetView grouped={category} />}
+                                {viewBudget && category && <BudgetView grouped={category}/>}
                             </div>
                         </div>
+                    </div>
+                    <div className="h-12 w-full"/>
+                    <div className="w-full h-2/3 flex gap-8 p-8 px-4 items-center">
+                        <div className="w-1/2 h-full text-5xl grid grid-rows-2">
+                            <div className="flex items-end justify-center">Consider investing </div>
+                            <div className="flex items-start justify-end ">with popular &nbsp; <b className="text-blue-800">ETFs</b></div>
+                        </div>
+                        <div  className="h-full w-20"/>
+                        <div
+                            className="w-1/4 grid grid-rows-[30%_50%_20%] h-full bg-gradient-to-b from-amber-100 bg-opacity-20  border border-slate-400 rounded-xl">
+                            <div className="w-full h-full flex">
+                                <div
+                                    className="text-2xl border-r border-slate-600 w-full flex items-center justify-center ">
+                                    SPDR S&P500
+                                </div>
+                                <div className="w-full grid grid-rows-2">
+                                    <div className="flex items-center justify-center bg-red-400 bg-opacity-10">Expense:
+                                        0.095%
+                                    </div>
+                                    <div className="flex items-center justify-center bg-green-400 bg-opacity-40">Yearly
+                                        Return: 32%
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="p-4 text-lg pt-8">
+                                <div>Tracks the S&P 500 index, providing exposure to 500 of the largest U.S. companies
+                                </div>
+                                <div className="mt-4">Highly liquid with <b>tight bid-ask spreads</b></div>
+                            </div>
+                            <div className="flex items-center justify-center text-xl">
+                                Risk: Moderate
+                            </div>
+                        </div>
+
+                        <div className="w-1/4 grid grid-rows-[30%_50%_20%] h-full bg-gradient-to-b from-amber-100 to-[rgba(254,225,205,0.3)] bg-opacity-20  border border-slate-400 rounded-xl">
+                            <div className="w-full h-full flex">
+                                <div
+                                    className="text-2xl border-r border-slate-600 w-full flex items-center justify-center ">
+                                    VTI TOTAL
+                                </div>
+                                <div className="w-full grid grid-rows-2">
+                                    <div className="flex items-center justify-center bg-green-400 bg-opacity-10">Expense:
+                                        0.03%
+                                    </div>
+                                    <div className="flex items-center justify-center bg-green-400 bg-opacity-30">Yearly
+                                        Return: 26.1%
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="p-4 text-lg pt-8">
+                                <div>Exposure to the entire U.S. equity market, including multi-cap growth and value stocks
+                                </div>
+                                <div className="mt-4">Highly liquid with <b>tight bid-ask spreads</b></div>
+                            </div>
+                            <div className="flex items-center justify-center text-xl">
+                                Risk: Moderate - Aggresive
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 

@@ -194,7 +194,7 @@ def Goal_Recommendation():
 
         prompt = f"""
             The user has an income of ${income} per year and their yearly expenses are ${expenses}. They also have a debt of ${debt} and a credit score of ${credit_score}.
-            Their financial goal is {financial_goals}. What recommendations can be made to improve their budgeting and save more money? Give me a response in a one paragraph format no bullet points.
+            Their financial goal is {financial_goals}. The user spends {Utilities} on utilities, {Food} on food and {Transportation} on transportation monthly. What recommendations can be made to improve their budgeting and save more money? Give me a response in at most 2 paragraphs that are formatted such that paras are seperated by the character ~ to indicate start of a new para.
             Also do it in a format where you are talking to the user directly. Directly giving them advice speaking as if we are an app giving out reccomendations to improve budget to reach finacancial goal.
         """
         recommendation = get_budget_recommendation(prompt)
