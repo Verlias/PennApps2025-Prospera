@@ -34,16 +34,27 @@ def save():
         Hard Code Test
         data = {
             "name": "John Doe",
+            "capitalone_id": "123456",
             "income": 70000,
             "debt": 8000,
-            "credit_score": 715
+            "credit_score": 715,
+            "Utilities": 200,
+            "Food": 300,
+            "Housing": 500,
+            "Transportation": 200
         }   
         '''
         # Extract name, email, income, debt, and credit_score from the input data
         name = data.get('name')
+        capitalone_id = data.get('capitalone_id')
         income = data.get('income')
         debt = data.get('debt')
         credit_score = data.get('credit_score')
+        utilities = data.get('Utilities')
+        food = data.get('Food')
+        housing = data.get('Housing')
+        transportation = data.get('Transportation')
+    
 
         # Validate that all necessary fields are provided
         if name is None or income is None or debt is None or credit_score is None:
@@ -53,9 +64,14 @@ def save():
         # Prepare the user document
         user = {
             "name": name,
+            "capitalone_id": capitalone_id,
             "income": income,
             "debt": debt,
-            "credit_score": credit_score
+            "credit_score": credit_score,
+            "Utilities": utilities,
+            "Food": food,
+            "Housing": housing,
+            "Transportation": transportation,
         }
 
         # Debugging: log the user data before inserting
@@ -80,26 +96,30 @@ def save():
 @app.route('/retrieve', methods=['GET'])
 def retrieve():
     try:
-        # Get all users from the database
-        users = mongo.db.test.find()
+        capitalone_id = request.args.get('capitalone_id')
 
-        # Initialize an empty list to store the user data
-        user_data = []
+        if not capitalone_id:
+            return jsonify({"error": "capitalone_id is required"}), 400
 
-        # Loop through the users and extract the necessary fields
-        for user in users:
-            user_data.append({
-                "name": user["name"],
-                "income": user["income"],
-                "debt": user["debt"],
-                "credit_score": user["credit_score"]
-            })
+        user = mongo.db.test.find_one({"capitalone_id": capitalone_id})
 
-        # Return the user data as a JSON response
-        return jsonify(user_data), 200
-    
+        if user:
+            user_data = {
+                "name": user.get("name"),
+                "capitalone_id": user.get("capitalone_id"),
+                "income": user.get("income"),
+                "debt": user.get("debt"),
+                "credit_score": user.get("credit_score"),
+                "Utilities": user.get("Utilities"),
+                "Food": user.get("Food"),
+                "Housing": user.get("Housing"),
+                "Transportation": user.get("Transportation"),
+            }
+            return jsonify(user_data), 200
+        else:
+            return jsonify({"message": "No user found with the specified capitalone_id."}), 404
+
     except Exception as e:
-        # Log the exception and return an error message
         app.logger.error(f"Error during retrieving user information: {e}")
         return jsonify({"error": "An error occurred during retrieving user information"}), 500
 
