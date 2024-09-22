@@ -6,6 +6,8 @@ import {desktopOS, valueFormatter} from "../utils/webUsageStats.js";
 import {CAPITALONE_KEY} from "../../keys.js";
 import {CumuPlot} from "../components/CumuPlot.jsx";
 import {BudgetView} from "../components/BudgetView.jsx";
+import { Link } from "react-router-dom"; 
+
 
 export const Home = () => {
 
@@ -148,8 +150,12 @@ export const Home = () => {
             <div className="w-full h-[8%] px-4 flex justify-between">
                 <div className="w-[10%]  h-full text-2xl flex items-center justify-center border-b border-slate-600 hover:border-b-2 transition-all hover:cursor-pointer font-serif">Home</div>
                 <div className="w-[20%] h-full flex gap-2">
-                    <div className="w-full h-full text-2xl flex items-center justify-center border-b border-slate-600 hover:border-b-2 transition-all hover:cursor-pointer font-serif">Recommend</div>
-                    <div className="w-full h-full text-2xl flex items-center justify-center border-b border-slate-600 hover:border-b-2 transition-all hover:cursor-pointer font-serif">Account</div>
+                <div className="w-full h-full text-2xl flex items-center justify-center border-b border-slate-600 hover:border-b-2 transition-all hover:cursor-pointer font-serif">
+                    Recommend
+                </div>
+                <Link to="/account" className="w-full h-full text-2xl flex items-center justify-center border-b border-slate-600 hover:border-b-2 transition-all hover:cursor-pointer font-serif">
+                    Account
+                </Link>
                 </div>
             </div>
             <div className="w-full h-[82%] grid grid-rows-[75%_25%]">
