@@ -44,3 +44,38 @@ Prospera is an AI-powered budgeting application built with advanced web technolo
 - **Python 3.x**: Required to run the Flask backend.
 - **MongoDB**: For the database (either locally or via a cloud provider like MongoDB Atlas).
 
+## Inspiration
+We were inspired by the importance of **financial well-being** 💰 and the growing need for personalized financial tools that help individuals make informed decisions about their money. With the rise of AI technologies, we saw an opportunity to provide users with a smart budgeting tool that can offer insights tailored to their spending habits.
+
+## What it does
+Prospera provides **personalized budget optimization** 📊 by analyzing users' spending patterns. It delivers budget recommendations, predicts future spending behavior, and helps users improve their financial management. Additionally, the integrated chatbot uses AI 🤖 to offer real-time financial insights and tips.
+
+## How we built it
+We developed the **frontend using React** ⚛️, ensuring a seamless and responsive user interface. For the **backend**, we used **Flask** 🍃, which handles user requests, connects to our **MongoDB** 🗄️ database for data storage, and integrates machine learning models built with **scikit-learn** 🔍. We deployed the **Cerebras AI platform** ⚡ to handle our chatbot's AI inference, powered by the **LLaMA Large Language Model (LLM)** 📚, and used **Capital One’s CerebrAPI** 🏦 for real-time financial data. **PropelAuth** 🔑 was used to ensure secure authentication for all users.
+
+## Challenges we ran into
+- **Integrating Capital One’s CerebrAPI** with real-time financial data while ensuring security and accuracy.
+- **Deploying the LLaMA model** on the Cerebras platform and optimizing its performance for real-time interactions.
+- Managing **data security** 🔒 and privacy concerns, especially with sensitive financial data.
+- Ensuring a smooth **frontend-backend connection**, especially with complex API calls and machine learning predictions.
+
+## Accomplishments that we're proud of
+- Successfully deploying an **AI-powered chatbot** 🤖 that can deliver fast and accurate financial insights using the **Cerebras platform**.
+- Creating a smooth and intuitive **user interface** 🌟 that allows users to effortlessly manage their budgets.
+- **Integrating real-time financial data** from Capital One’s CerebrAPI to provide users with up-to-date information.
+- Ensuring **secure and scalable user authentication** 🔒 with PropelAuth.
+
+## What we learned
+- How to effectively integrate **AI and machine learning models** into a real-time application for financial analysis.
+- The importance of ensuring **data security** 🔐 when dealing with sensitive financial information.
+- How to deploy and scale an AI application using cutting-edge platforms like **Cerebras**.
+- Optimizing both frontend and backend performance for a **better user experience**.
+
+## What's next for Prospera
+- **Expanding the machine learning models** to offer more detailed financial insights and predictions.
+- Integrating additional **financial services APIs** to offer users a wider range of features.
+- Adding more **personalization features** ✨ based on individual user financial goals and behavior.
+- Continuing to improve the **chatbot** for more advanced interactions and financial advice.
+- Exploring mobile app development 📱 to make Prospera more accessible on the go.
+
+
