@@ -1,3 +1,5 @@
+import {CAPITALONE_KEY} from "../../keys.js";
+
 const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 export function dateDifference(date1, date2, unit = 'days') {
     const diffInMs = Math.abs(date2 - date1);
@@ -52,9 +54,7 @@ function groupSumsByMonth(data) {
 
     let temp = [];
     let curr_mon = "00";
-    // Iterate through the data
     data.forEach(({ date, totalSum }) => {
-        // Extract the year and month (YYYY-MM format)
         const [year, month, _] = date.split('-');
 
         if(month !== curr_mon){
@@ -68,6 +68,32 @@ function groupSumsByMonth(data) {
 
     if(temp.length) grouped.push([...temp])
 
-    // Convert the grouped object into an array of arrays
     return grouped;
+}
+
+async function getMerchantNames(merchantIds) {
+    const merchantNames = [];
+    const baseUrl = "http://api.nessieisreal.com";
+
+    for (const item of merchantIds) {
+        const response = await fetch(`${baseUrl}/merchants/${item.merchant_id}?key=${CAPITALONE_KEY}`);
+        const merchantData = await response.json();
+        if (merchantData.name) {
+            merchantNames.push({...merchantData, time: new Date(item.purchase_date), price: item.amount});
+        }
+    }
+
+    return merchantNames;
+}
+
+export async function getLastThreeMerchantNames(transactions) {
+    const today = new Date();
+
+    const validTransactions = transactions
+        .filter(transaction => new Date(transaction.purchase_date) <= today)
+        .sort((a, b) => new Date(b.purchase_date) - new Date(a.purchase_date))
+        .slice(0, 3);
+
+    const merchantNames = await getMerchantNames(validTransactions);
+    return merchantNames;
 }

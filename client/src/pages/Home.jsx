@@ -1,9 +1,11 @@
 import {useEffect, useRef, useState} from "react";
 import { PieChart } from '@mui/x-charts/PieChart';
-import {dateDifference} from "../utils/tools.js";
+import {dateDifference, getGroupedTransactions, getLastThreeMerchantNames} from "../utils/tools.js";
 import {SpendChart} from "../components/SpendChart.jsx";
-import {useNavigate} from "react-router-dom";
 import {desktopOS, valueFormatter} from "../utils/webUsageStats.js";
+import {CAPITALONE_KEY} from "../../keys.js";
+import {CumuPlot} from "../components/CumuPlot.jsx";
+import {BudgetView} from "../components/BudgetView.jsx";
 
 export const Home = () => {
 
@@ -69,9 +71,11 @@ export const Home = () => {
                     "name": "BGR",
                     "url": "https://bgr.com"
                 }
-            }]
-    );
+            }]);
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const [yVals, setYVals] = useState([])
+    const [viewBudget, setViewBudget] = useState(true);
+    const [lastTransactions, setLastTransactions] = useState(null);
 
     const [sp, setSp] = useState([{oneYearPercentage:"75.40%",
         symbol:"BLOK",
@@ -105,9 +109,18 @@ export const Home = () => {
         // }).then(resp => resp.json())
         //     .then(res => {
         //         setNews(res.articles);
-        //         console.log(res)
         //     })
 
+        const customerId = "66ef454a9683f20dd518a575";
+        const baseUrl = "http://api.nessieisreal.com";
+        const url = `${baseUrl}/accounts/${customerId}/purchases?key=${CAPITALONE_KEY}`;
+
+        fetch(url).then(res => res.json())
+            .then(resp => {
+                setYVals(getGroupedTransactions(resp));
+                return getLastThreeMerchantNames(resp)
+            })
+            .then(item => setLastTransactions(item))
     }, []);
 
     const upcoming_bills = [
@@ -116,11 +129,6 @@ export const Home = () => {
         ["PECO", 80, new Date("15 October 2024")]
     ]
 
-    const recent_purchases = [
-        ["Chipotle", 16, new Date("10:30 21 September 2024")],
-        ["Five Guys", 10, new Date("12:30 20 September 2024")],
-        ["ACME", 10, new Date("10:30 20 September 2024")]
-    ]
     const color_graded_bills = useRef(getBackgroundColor(upcoming_bills));
 
     function getBackgroundColor(prices) {
@@ -129,19 +137,25 @@ export const Home = () => {
 
         return prices.map(([_, price, _1]) => {
             const normalized = (price - minPrice) / (maxPrice - minPrice);
-
             const redIntensity = Math.floor(normalized * 255);
 
-            return `rgb(${redIntensity}, 120, 80)`;  // Redder with higher prices
+            return `rgb(${redIntensity}, 120, 80)`;
         });
     }
 
     return (
         <div className="w-full h-full bg-amber-50 overflow-x-hidden overflow-y-auto scrollbar-hidden">
+            <div className="w-full h-[8%] px-4 flex justify-between">
+                <div className="w-[10%]  h-full text-2xl flex items-center justify-center border-b border-slate-600 hover:border-b-2 transition-all hover:cursor-pointer font-serif">Home</div>
+                <div className="w-[20%] h-full flex gap-2">
+                    <div className="w-full h-full text-2xl flex items-center justify-center border-b border-slate-600 hover:border-b-2 transition-all hover:cursor-pointer font-serif">Recommend</div>
+                    <div className="w-full h-full text-2xl flex items-center justify-center border-b border-slate-600 hover:border-b-2 transition-all hover:cursor-pointer font-serif">Account</div>
+                </div>
+            </div>
             <div className="w-full h-[82%] grid grid-rows-[75%_25%]">
                 <div className="w-full h-full grid grid-cols-[70%_30%] ">
                     <div className="flex items-center justify-center">
-                        <SpendChart/>
+                        <SpendChart yVals={yVals}/>
                     </div>
                     <div className="w-full h-full grid grid-rows-[40%_50%_10%]">
                         <div className="w-full h-full grid grid-rows-[85%_15%] text-8xl">
@@ -149,10 +163,8 @@ export const Home = () => {
                                 <div/>
                                 <div className="grid grid-cols-[10%_90%]">
                                     <div className="pt-4 w-full h-full flex items-center justify-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                             strokeWidth={3.5} stroke="currentColor" className="text-green-700 size-6">
-                                            <path strokeLinecap="round" strokeLinejoin="round"
-                                                  d="M8.25 6.75 12 3m0 0 3.75 3.75M12 3v18"/>
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3.5} stroke="currentColor" className="text-green-700 size-6">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 6.75 12 3m0 0 3.75 3.75M12 3v18"/>
                                         </svg>
                                     </div>
                                     $1217
@@ -164,46 +176,41 @@ export const Home = () => {
                         </div>
                         <div className="w-full grid grid-cols-[50%_50%] h-full">
                             <div className="w-full h-full flex items-center justify-center">
-                                <div className="w-10/12 h-5/6 bg-amber-100 rounded-lg border border-slate-600 p-2">
+                                <div className="w-11/12 h-5/6 bg-amber-100 rounded-lg border border-slate-600 p-2">
                                     <div className="w-full bg-blue-900 flex h-[10%] relative rounded-lg">
-                                        <div onMouseEnter={() => setHoverBar("a")}
-                                             onMouseLeave={() => setHoverBar(null)} style={{
+                                        <div onMouseEnter={() => setHoverBar("a")} onMouseLeave={() => setHoverBar(null)} style={{
                                             width: hoverBar === null ? "70%" : hoverBar === "a" ? "100%" : "0%",
                                             borderRadius: hoverBar === "a" ? "0.5rem" : ""
-                                        }}
-                                             className="flex items-center justify-center text-white transition-all bg-indigo-700 rounded-l-lg">
+                                        }} className="flex items-center justify-center text-white transition-all bg-indigo-700 rounded-l-lg">
                                             {hoverBar === "a" ? "Education" : ""}
                                         </div>
-                                        <div onMouseEnter={() => setHoverBar("b")}
-                                             onMouseLeave={() => setHoverBar(null)} style={{
+                                        <div onMouseEnter={() => setHoverBar("b")} onMouseLeave={() => setHoverBar(null)} style={{
                                             width: hoverBar === null ? "20%" : hoverBar === "b" ? "100%" : "0%",
                                             borderRadius: hoverBar === "b" ? "0.5rem" : ""
                                         }}
                                              className="flex items-center justify-center text-white transition-all bg-blue-500">
                                             {hoverBar === "b" ? "Housing" : ""}
                                         </div>
-                                        <div onMouseEnter={() => setHoverBar("c")}
-                                             onMouseLeave={() => setHoverBar(null)} style={{
+                                        <div onMouseEnter={() => setHoverBar("c")} onMouseLeave={() => setHoverBar(null)} style={{
                                             width: hoverBar === null ? "10%" : hoverBar === "c" ? "100%" : "0%",
                                             borderRadius: hoverBar === "c" ? "0.5rem" : ""
-                                        }}
-                                             className="flex items-center justify-center text-white transition-all bg-cyan-500 rounded-r-lg">
+                                        }} className="flex items-center justify-center text-white transition-all bg-cyan-500 rounded-r-lg">
                                             {hoverBar === "c" ? "Utilities" : ""}
                                         </div>
                                     </div>
                                     <div className="w-full h-[65%] mt-2">
                                         {
-                                            recent_purchases.map(([company, amount, date], index) => (
+                                            lastTransactions?.map((item, index) => (
                                                     <div
                                                         className={`w-full h-1/3   ${index === 0 ? "border-t border-b" : "border-b"} transition-colors hover:bg-amber-200 flex border-slate-600`}>
-                                                        <div className="w-[20%] text-xl font-semibold flex items-center">
-                                                            ${amount}
+                                                        <div className="w-[22%] text-xl font-semibold flex items-center">
+                                                            ${item.price.toFixed(1)}
                                                         </div>
-                                                        <div className="w-[40%] flex items-center">
-                                                            {company}
+                                                        <div className="w-[38%] flex items-center">
+                                                            {item.name}
                                                         </div>
                                                         <div className="w-[40%] flex items-center justify-end">
-                                                            {dateDifference(new Date(), date, "hours")}
+                                                            {dateDifference(new Date(), item.time, "hours")}
                                                             <div className="text-xs text-gray-700">hours ago</div>
                                                         </div>
                                                     </div>
@@ -241,8 +248,7 @@ export const Home = () => {
                                                     {company}: due in {dateDifference(new Date(), bill)} days
                                                 </div>
 
-                                                <div style={{backgroundColor: color_graded_bills.current[index]}}
-                                                     className="flex items-center justify-center w-1/4 h-full">
+                                                <div style={{backgroundColor: color_graded_bills.current[index]}} className="flex items-center justify-center w-1/4 h-full">
                                                     ${amount}
                                                 </div>
                                             </div>
@@ -261,9 +267,7 @@ export const Home = () => {
                                 let sentiment = item.sentiment?.positive - item.sentiment?.negative > 0.3
                                 let rgb = `rgba(${sentiment ? 235 : 255}, ${sentiment ? 251 : 225}, ${215}, 0.8)`;
                                 return (
-                                    <a style={{backgroundColor: rgb}} key={item.id}
-                                       href={item.url}
-                                       className="focus:outline-none grid grid-rows-[60%_40%] hover:bg-amber-100 transition-colors hover:cursor-pointer w-full border-x border-slate-300 h-full ">
+                                    <a style={{backgroundColor: rgb}} key={item.id} href={item.url} className="focus:outline-none grid grid-rows-[60%_40%] hover:bg-amber-100 transition-colors hover:cursor-pointer w-full border-x border-slate-300 h-full ">
                                         <div className="italic p-4">
                                             {item.title}
                                         </div>
@@ -295,20 +299,22 @@ export const Home = () => {
                                         highlightScope: { fade: 'global', highlight: 'item' },
                                         faded: { innerRadius: 40, additionalRadius: -30, color: 'gray' },
                                         valueFormatter,
-                                        label: {
-                                            position: 'outside', // Choose 'inside' or 'outside' for the label placement
-                                            visible: true, // Ensures labels are shown
-                                            formatter: (value, name) => `${name}: ${value}`, // Customize label content
-                                        },
-
                                     },
                                 ]}
                                 height={300}
                             />
                         </div>
-                        <div></div>
+                        <div className="w-full h-full pl-8 grid grid-cols-[8%_92%]">
+                            <div className="ml-8 w-full h-full bg-amber-50 grid grid-rows-2">
+                                <div onClick={() => setViewBudget(false)} className={`${viewBudget ? "bg-amber-100" : "border-r border-slate-600"} transition-all hover:cursor-pointer [writing-mode:vertical-lr] w-full h-full flex items-center justify-center text-lg`}>Net Spend</div>
+                                <div onClick={() => setViewBudget(true)} className={`${!viewBudget ? "bg-amber-100" : "border-r border-slate-600"} transition-all hover:cursor-pointer [writing-mode:vertical-lr] w-full h-full flex items-center justify-center text-lg`}>Budget</div>
+                            </div>
+                            <div className="w-full h-full pl-8">
+                                {yVals.length && !viewBudget && <CumuPlot yData={yVals[yVals.length - 1]}/>}
+                                {viewBudget && <BudgetView />}
+                            </div>
+                        </div>
                     </div>
-
                 </div>
 
             </div>
