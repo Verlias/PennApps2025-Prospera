@@ -1,12 +1,109 @@
 from flask import Flask, jsonify, request #pip install flask
 from flask_cors import CORS #pip install flask-cors
+from flask_pymongo import PyMongo #pip install flask-pymongo
 from model import financial_group_classification
 from LLM import get_budget_recommendation
+import os
 
 
 app = Flask(__name__)
 CORS(app)
 
+uri = os.getenv("uri")
+
+
+#Mongo Connection
+app.config["MONGO_URI"] = uri
+mongo = PyMongo(app)
+
+try:
+    mongo.cx.admin.command('ping')  # Pinging MongoDB to check the connection
+    print("Successfully connected to MongoDB")
+except:
+    print("Failed to connect to MongoDB")
+
+
+# Post Method - Save Users Information
+@app.route('/save', methods=['POST'])
+def save():
+    try:
+        # Get the input data from the request body
+        data = request.get_json()
+
+        '''
+        Hard Code Test
+        data = {
+            "name": "John Doe",
+            "income": 70000,
+            "debt": 8000,
+            "credit_score": 715
+        }   
+        '''
+        # Extract name, email, income, debt, and credit_score from the input data
+        name = data.get('name')
+        income = data.get('income')
+        debt = data.get('debt')
+        credit_score = data.get('credit_score')
+
+        # Validate that all necessary fields are provided
+        if name is None or income is None or debt is None or credit_score is None:
+            app.logger.warning("Missing required input fields: name, income, debt, or credit_score")
+            return jsonify({"error": "Missing required input fields: name, income, debt, or credit_score"}), 400
+
+        # Prepare the user document
+        user = {
+            "name": name,
+            "income": income,
+            "debt": debt,
+            "credit_score": credit_score
+        }
+
+        # Debugging: log the user data before inserting
+        app.logger.debug(f"Attempting to insert user data: {user}")
+
+        # Save the user's information to the database
+        result = mongo.db.test.insert_one(user)
+
+        # Debugging: log the result after insertion
+        app.logger.debug(f"User information inserted successfully, ID: {result.inserted_id}")
+
+        # Return a success message
+        return jsonify({"message": "User information saved successfully"}), 200
+    
+    except Exception as e:
+        # Log the exception and return an error message
+        app.logger.error(f"Error during saving user information: {e}")
+        return jsonify({"error": "An error occurred during saving user information"}), 500
+    
+
+# Get Method - Retrieve Users Information
+@app.route('/retrieve', methods=['GET'])
+def retrieve():
+    try:
+        # Get all users from the database
+        users = mongo.db.test.find()
+
+        # Initialize an empty list to store the user data
+        user_data = []
+
+        # Loop through the users and extract the necessary fields
+        for user in users:
+            user_data.append({
+                "name": user["name"],
+                "income": user["income"],
+                "debt": user["debt"],
+                "credit_score": user["credit_score"]
+            })
+
+        # Return the user data as a JSON response
+        return jsonify(user_data), 200
+    
+    except Exception as e:
+        # Log the exception and return an error message
+        app.logger.error(f"Error during retrieving user information: {e}")
+        return jsonify({"error": "An error occurred during retrieving user information"}), 500
+
+    
 
 # Post Method - Machine Learning Classifications
 @app.route('/classify', methods=['POST'])
