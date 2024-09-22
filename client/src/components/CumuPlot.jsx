@@ -3,7 +3,6 @@ import {useEffect, useState} from "react";
 import regression from 'regression';
 
 export const CumuPlot = ({yData}) => {
-    const [processedData, setProcessedData] = useState([])
     const [predictedSpend, setPredictedSpend] = useState(null)
 
     function cumulativeArray(arr) {
@@ -20,7 +19,6 @@ export const CumuPlot = ({yData}) => {
 
     useEffect(() => {
         setPredictedSpend(regression.linear(cumulativeArray(yData).map((item, i) => [i+1, item])).predict(31)[1]);
-        console.log(predictedSpend)
     }, [])
 
     return (
@@ -35,8 +33,8 @@ export const CumuPlot = ({yData}) => {
                 }
             ]}
                 layout={{
-                width: "850",
-                height: "400",
+                width: "900",
+                height: "450",
                 paper_bgcolor: 'rgba(0,0,0,0)',
                 plot_bgcolor: "rgba(0,0,0,0)",
                 title: "Estimated Monthly Spending: $<b>" + predictedSpend + "</b>",

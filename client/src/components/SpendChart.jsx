@@ -1,7 +1,4 @@
 import Plot from "react-plotly.js";
-import {useEffect, useState} from "react";
-import {getGroupedTransactions} from "../utils/tools.js";
-import {CAPITALONE_KEY} from "../../keys.js";
 
 export const SpendChart = ({yVals}) => {
     const xValues = Array.from({ length: 31}).map((_, i) => i + 1);

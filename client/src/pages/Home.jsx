@@ -1,11 +1,17 @@
 import {useEffect, useRef, useState} from "react";
 import { PieChart } from '@mui/x-charts/PieChart';
-import {dateDifference, getGroupedTransactions, getLastThreeMerchantNames} from "../utils/tools.js";
+import {
+    dateDifference, formatGroupedTransactions,
+    getGroupedTransactions,
+    getGroupedTransactionsByCategory,
+    getLastThreeMerchantNames
+} from "../utils/tools.js";
 import {SpendChart} from "../components/SpendChart.jsx";
 import {desktopOS, valueFormatter} from "../utils/webUsageStats.js";
 import {CAPITALONE_KEY} from "../../keys.js";
 import {CumuPlot} from "../components/CumuPlot.jsx";
 import {BudgetView} from "../components/BudgetView.jsx";
+import {useNavigate} from "react-router-dom";
 
 export const Home = () => {
 
@@ -75,7 +81,9 @@ export const Home = () => {
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     const [yVals, setYVals] = useState([])
     const [viewBudget, setViewBudget] = useState(true);
+    const [category, setCategory] = useState(null);
     const [lastTransactions, setLastTransactions] = useState(null);
+    const navigate = useNavigate()
 
     const [sp, setSp] = useState([{oneYearPercentage:"75.40%",
         symbol:"BLOK",
@@ -116,11 +124,19 @@ export const Home = () => {
         const url = `${baseUrl}/accounts/${customerId}/purchases?key=${CAPITALONE_KEY}`;
 
         fetch(url).then(res => res.json())
-            .then(resp => {
+            .then(async resp => {
                 setYVals(getGroupedTransactions(resp));
-                return getLastThreeMerchantNames(resp)
+                const res = await getLastThreeMerchantNames(resp)
+                return [res, resp]
             })
-            .then(item => setLastTransactions(item))
+            .then(item => {
+                setLastTransactions(item[0])
+                return getGroupedTransactionsByCategory(item[1])
+            })
+            .then(item => {
+                console.log(item)
+                setCategory(item)
+            })
     }, []);
 
     const upcoming_bills = [
@@ -148,8 +164,8 @@ export const Home = () => {
             <div className="w-full h-[8%] px-4 flex justify-between">
                 <div className="w-[10%]  h-full text-2xl flex items-center justify-center border-b border-slate-600 hover:border-b-2 transition-all hover:cursor-pointer font-serif">Home</div>
                 <div className="w-[20%] h-full flex gap-2">
-                    <div className="w-full h-full text-2xl flex items-center justify-center border-b border-slate-600 hover:border-b-2 transition-all hover:cursor-pointer font-serif">Recommend</div>
-                    <div className="w-full h-full text-2xl flex items-center justify-center border-b border-slate-600 hover:border-b-2 transition-all hover:cursor-pointer font-serif">Account</div>
+                    <div onClick={() => navigate("/recommend")} className="w-full h-full text-2xl flex items-center justify-center border-b border-slate-600 hover:border-b-2 transition-all hover:cursor-pointer font-serif">Recommend</div>
+                    <div onClick={() => navigate("/account")} className="w-full h-full text-2xl flex items-center justify-center border-b border-slate-600 hover:border-b-2 transition-all hover:cursor-pointer font-serif">Account</div>
                 </div>
             </div>
             <div className="w-full h-[82%] grid grid-rows-[75%_25%]">
@@ -291,27 +307,27 @@ export const Home = () => {
                 <div className="w-full h-[60%]">
                     <div className="rounded-xl border border-slate-400 bg-amber-100 bg-opacity-30 w-full h-full grid grid-cols-[40%_60%] p-8">
                         <div className="w-full h-full flex items-center justify-center ">
-                            <PieChart
-                                colors={['#fed7aa', '#d9f99d', '#ddd6fe', '#fda4af', '#7dd3fc']}
+                            {category && <PieChart
+                                colors={['#fed7aa', '#d9f99d', '#ddd6fe', '#fda4af', '#7dd3fc', "#d8b4fe", "#34d399"]}
                                 series={[
                                     {
-                                        data: desktopOS,
-                                        highlightScope: { fade: 'global', highlight: 'item' },
-                                        faded: { innerRadius: 40, additionalRadius: -30, color: 'gray' },
+                                        data: formatGroupedTransactions(category),
+                                        highlightScope: {fade: 'global', highlight: 'item'},
+                                        faded: {innerRadius: 40, additionalRadius: -30, color: 'gray'},
                                         valueFormatter,
                                     },
                                 ]}
                                 height={300}
-                            />
+                            />}
                         </div>
                         <div className="w-full h-full pl-8 grid grid-cols-[8%_92%]">
                             <div className="ml-8 w-full h-full bg-amber-50 grid grid-rows-2">
-                                <div onClick={() => setViewBudget(false)} className={`${viewBudget ? "bg-amber-100" : "border-r border-slate-600"} transition-all hover:cursor-pointer [writing-mode:vertical-lr] w-full h-full flex items-center justify-center text-lg`}>Net Spend</div>
-                                <div onClick={() => setViewBudget(true)} className={`${!viewBudget ? "bg-amber-100" : "border-r border-slate-600"} transition-all hover:cursor-pointer [writing-mode:vertical-lr] w-full h-full flex items-center justify-center text-lg`}>Budget</div>
+                                <div onClick={() => setViewBudget(false)} className={`${viewBudget ? "bg-amber-100" : "border-r border-slate-600"} transition-all hover:cursor-pointer [writing-mode:vertical-lr] w-full h-full flex items-center justify-center text-xl`}>Net Spend</div>
+                                <div onClick={() => setViewBudget(true)} className={`${!viewBudget ? "bg-amber-100" : "border-r border-slate-600"} transition-all hover:cursor-pointer [writing-mode:vertical-lr] w-full h-full flex items-center justify-center text-xl`}>Budget</div>
                             </div>
                             <div className="w-full h-full pl-8">
                                 {yVals.length && !viewBudget && <CumuPlot yData={yVals[yVals.length - 1]}/>}
-                                {viewBudget && <BudgetView />}
+                                {viewBudget && category && <BudgetView grouped={category} />}
                             </div>
                         </div>
                     </div>
