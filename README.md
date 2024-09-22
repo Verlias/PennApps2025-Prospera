@@ -1,6 +1,6 @@
 # PennApps2025
 Team Members:
- - Logan Voravong: loganvoravong@gmail.com
+ - Logan Voravong: lsv27@drexel.edu
  - Aman Sharma: amanshar@sas.upenn.edu
- - Taqi Tahmid: tahmid232tt@gmail.com
+ - Taqi Tahmid: tt676@drexel.edu
  - Jacob Rimmer: rimmerj@seas.upenn.edu
