@@ -1,5 +1,4 @@
 // Replace with your Nessie API key
-const apiKey = "48cf691d70b7d36ecc00e312b3598cd5";
 
 // Customer ID (provided)
 const customerId = "66eede179683f20dd5189f63";

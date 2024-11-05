@@ -4,7 +4,6 @@ import requests
 from datetime import datetime, timedelta
 
 # Replace with your Nessie API key
-api_key = "48cf691d70b7d36ecc00e312b3598cd5"
 
 # Base URL for Nessie API
 base_url = "http://api.nessieisreal.com"
